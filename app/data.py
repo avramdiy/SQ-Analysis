@@ -157,6 +157,96 @@ def visualize_month():
     except Exception as e:
         return f"An error occurred while processing the file: {e}"
 
+@app.route('/compare_months', methods=['GET'])
+def compare_months():
+    file_path = r"C:\Users\avram\OneDrive\Desktop\TRG Week 28\sq.us.txt"
+
+    try:
+        # Load the file into a Pandas DataFrame
+        df = pd.read_csv(file_path, sep=",", engine="python", parse_dates=['Date'])
+
+        # Filter the DataFrame for dates within the specified range
+        start_date = "2016-01-01"
+        end_date = "2016-12-31"
+        df = df[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
+
+        # Get selected months from the query parameters
+        month1 = request.args.get('month1')
+        month2 = request.args.get('month2')
+
+        if not month1 or not month2:
+            # Render a page with the dropdowns to select two months
+            html_template = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Compare Months</title>
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+            </head>
+            <body>
+                <div class="container">
+                    <h1 class="mt-5">Compare Two Months</h1>
+                    <form action="/compare_months" method="get">
+                        <div class="form-group">
+                            <label for="month1">Choose the first month:</label>
+                            <select name="month1" id="month1" class="form-control" required>
+                                <option value="" disabled selected>Select a month</option>
+                                {options}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="month2">Choose the second month:</label>
+                            <select name="month2" id="month2" class="form-control" required>
+                                <option value="" disabled selected>Select a month</option>
+                                {options}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Compare</button>
+                    </form>
+                </div>
+            </body>
+            </html>
+            """
+            options = "\n".join([f'<option value="{i}">{pd.Timestamp(2023, i, 1).strftime("%B")}</option>' for i in range(1, 13)])
+
+            return render_template_string(html_template.format(options=options))
+
+        # Convert months to integers
+        month1, month2 = int(month1), int(month2)
+
+        # Filter data for each month
+        df_month1 = df[df['Date'].dt.month == month1]
+        df_month2 = df[df['Date'].dt.month == month2]
+
+        # Calculate average prices for each month
+        avg_month1 = df_month1[['Open', 'High', 'Low', 'Close']].mean()
+        avg_month2 = df_month2[['Open', 'High', 'Low', 'Close']].mean()
+
+        # Create a bar chart for comparison
+        labels = ['Open', 'High', 'Low', 'Close']
+        x = range(len(labels))
+
+        plt.figure(figsize=(10, 6))
+        plt.bar(x, avg_month1, width=0.4, label=f"Month {month1}", color='blue', align='center')
+        plt.bar([i + 0.4 for i in x], avg_month2, width=0.4, label=f"Month {month2}", color='orange', align='center')
+        plt.xticks([i + 0.2 for i in x], labels)
+        plt.title(f"Comparison of Averages: Month {month1} vs Month {month2}", fontsize=16)
+        plt.xlabel("Price Type", fontsize=12)
+        plt.ylabel("Average Price", fontsize=12)
+        plt.legend()
+        plt.grid(True)
+
+        # Save the plot to a BytesIO buffer
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        plt.close()
+
+        return Response(buf, mimetype='image/png')
+
+    except Exception as e:
+        return f"An error occurred while processing the file: {e}"
+
 
 if __name__ == '__main__':
     app.run(debug=True)

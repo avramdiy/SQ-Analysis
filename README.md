@@ -29,3 +29,9 @@
 - Made sure the internal monthly charts display the Open, High, Low prices in black, green, red ; for continuous visualization.
 
 ### 5th Commit
+
+- Created a route that allows the user to compare the 2016 monthly averages in a bar chart form.
+
+### Final Notes
+
+- Limited data. Need to choose a stock with more historical data next week for further statistical analysis. Looking at one arbitrary year does not help with investment decisions.
