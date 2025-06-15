@@ -18,6 +18,10 @@
 
 ### 3rd Commit
 
+- Generate a new route and plot, that shows the monthly average "Open" price in a black line.
+
+- Plotted monthly "High" & "Low" averages in green and red, respectively.
+
 ### 4th Commit
 
 ### 5th Commit
