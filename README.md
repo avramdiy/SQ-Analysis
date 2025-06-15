@@ -24,4 +24,8 @@
 
 ### 4th Commit
 
+- Create a route that lets me choose a drop down from the "/" route, to see a visualization of the specific data and days for the months of January to December.
+
+- Made sure the internal monthly charts display the Open, High, Low prices in black, green, red ; for continuous visualization.
+
 ### 5th Commit
