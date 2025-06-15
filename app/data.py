@@ -12,6 +12,15 @@ def load_dataframe():
         # Load the file into a Pandas DataFrame
         df = pd.read_csv(file_path, sep=",", engine="python")  # Adjust `sep` if not comma-delimited
 
+        # Filter the DataFrame for dates within the specified range
+        start_date = "2016-01-01"
+        end_date = "2016-12-31"
+        df = df[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
+
+        # Drop the "OpenInt" column if it exists
+        if 'OpenInt' in df.columns:
+            df = df.drop(columns=['OpenInt'])
+
         # Convert the DataFrame to an HTML table
         html_table = df.to_html(classes='table table-striped', index=False)
 

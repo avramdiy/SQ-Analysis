@@ -12,6 +12,10 @@
 
 ### 2nd Commit
 
+- Filter data by date to show rows dated from 2016-01-01 to 2016-12-31
+
+- Drop "OpenInt" column
+
 ### 3rd Commit
 
 ### 4th Commit
